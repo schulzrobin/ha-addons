@@ -1,7 +1,15 @@
 ARG BUILD_FROM
 FROM $BUILD_FROM
 
-# Copy data for add-on
+RUN \
+    apt-get update \
+    && apt-get install -y --no-install-recommends \
+        python3 \
+        python3-pip \
+        && pip3 install --no-cache-dir -U \
+        Flask \
+        requests
+
 COPY run.sh /
 COPY gen1_update.py /
 RUN chmod a+x /run.sh
