@@ -11,4 +11,4 @@ arch:
   - i386
 ingress_port: "5000"
 ingress: "true"
-panel_title: "Hello World"
+panel_title: "Shelly Gen.1"
