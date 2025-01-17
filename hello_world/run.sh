@@ -1,3 +1,5 @@
 #!/usr/bin/with-contenv bashio
 
-echo "Hello world!"
+echo "Shelly Gen.1 update Addon."
+
+python3 gen1_update.py
