@@ -1,6 +1,6 @@
-name: "Hello world"
-description: "My first real add-on!"
-version: "1.0.0"
+name: "Shelly Gen.1 update"
+description: "Webinterface to update Shelly Gen.1 devices"
+version: "0.0.1"
 slug: "hello_world"
 init: false
 arch:
