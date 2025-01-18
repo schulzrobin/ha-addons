@@ -2,4 +2,4 @@
 
 echo "Shelly Gen.1 update Addon."
 
-python3 /gen1_update.py
+python /gen1_update.py
