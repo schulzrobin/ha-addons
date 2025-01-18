@@ -6,8 +6,8 @@ RUN \
     python3 \
     py3-pip \
     && pip3 install --no-cache-dir -U \
-        setuptools \
-        wheel \
+        Flask \
+        requests \
 
 COPY run.sh /
 COPY gen1_update.py /
