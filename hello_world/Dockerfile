@@ -10,4 +10,4 @@ COPY run.sh /
 COPY gen1_update.py /
 RUN chmod a+x /run.sh
 
-CMD [ "/run.sh" ]
+CMD [ "python3 gen1_update.py" ]
