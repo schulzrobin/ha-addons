@@ -1,4 +1,4 @@
-name: Shelly Gen2 Updater
+name: Shelly Updater
 version: 0.0.1
 slug: shelly_gen2
 description: Firmware-Updates für Shelly Gen2 Geräte
