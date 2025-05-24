@@ -10,5 +10,6 @@ arch:
   - armv7
   - i386
 ingress_port: "5000"
-ingress: "true"
+ingress: true
+ingress_entry: dashboard/
 panel_title: "Shelly Gen.1"
