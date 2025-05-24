@@ -1,0 +1,15 @@
+name: "Shelly Gen.2 Updater"
+description: "Webinterface to update Shelly Gen.2 devices"
+version: "0.0.1"
+slug: "shelly_gen2"
+init: false
+arch:
+  - aarch64
+  - amd64
+  - armhf
+  - armv7
+  - i386
+ingress_port: "5000"
+ingress: true
+ingress_entry: dashboard/
+panel_title: "Shelly Gen.2 Updater"
