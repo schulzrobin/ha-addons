@@ -7,7 +7,7 @@ RUN \
     py3-pip \
     && pip3 install --no-cache-dir -U \
         Flask \
-        requests \
+        requests
 
 COPY run.sh /
 COPY gen2_update.py /
