@@ -1,16 +1,23 @@
-ARG BUILD_FROM
-FROM $BUILD_FROM
+FROM python:3.11-slim
 
-RUN \
-  apk add --no-cache \
-    python3 \
-    py3-pip \
-    && pip3 install --no-cache-dir -U \
-        Flask \
-        requests
+# Install system packages
+RUN apt-get update && apt-get install -y \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
 
-COPY run.sh /
-COPY gen2_update.py /
-RUN chmod a+x /run.sh
+# Create app directory
+WORKDIR /app
 
-CMD [ "python3 gen2_update.py" ]
+# Copy app and requirements
+COPY app/ ./
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy start script
+COPY run.sh /run.sh
+RUN chmod +x /run.sh
+
+# Environment for Ingress
+ENV INGRESS_ENTRY /local
+ENV LANG C.UTF-8
+
+CMD [ "/run.sh" ]
