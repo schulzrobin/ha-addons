@@ -10,7 +10,7 @@ RUN \
         requests \
 
 COPY run.sh /
-COPY gen1_update.py /
+COPY gen2_update.py /
 RUN chmod a+x /run.sh
 
 CMD [ "python3 gen2_update.py" ]
