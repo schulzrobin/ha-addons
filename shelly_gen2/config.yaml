@@ -4,6 +4,7 @@ slug: shelly_gen2
 description: Firmware-Updates für Shelly Gen2 Geräte
 startup: application
 ingress: true
+ingress_entry: dashboard/
 panel_icon: mdi:access-point-network
 panel_title: Shelly Updater
 homeassistant_api: false
