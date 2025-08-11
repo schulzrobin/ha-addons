@@ -1,7 +1,4 @@
 #!/usr/bin/with-contenv bashio
 set -e
-
-# Ingress nutzt standardmäßig 8099 intern; optional env nutzen, falls gesetzt
-PORT="${INGRESS_PORT:-8099}"
-
-exec gunicorn -b 0.0.0.0:${PORT} app:app --workers 4 --threads 2 --timeout 90
+# Fester Ingress-Port (wie in config.json)
+exec gunicorn -b 0.0.0.0:8099 app:app --workers 4 --threads 2 --timeout 90

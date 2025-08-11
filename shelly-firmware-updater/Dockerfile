@@ -1,6 +1,6 @@
-# Supervisor setzt {arch}-Base automatisch
 ARG BUILD_FROM=ghcr.io/home-assistant/amd64-base:latest
 FROM ${BUILD_FROM}
+SHELL ["/bin/ash","-o","pipefail","-c"]
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
@@ -10,22 +10,24 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 WORKDIR /app
 
 # Python + venv (PEP-668-konform)
-RUN apk add --no-cache python3 py3-pip py3-virtualenv
+RUN apk add --no-cache python3 py3-pip py3-virtualenv \
+ && python3 -m venv "$VIRTUAL_ENV"
 
-# Virtuelle Umgebung
-RUN python3 -m venv "$VIRTUAL_ENV"
-
-# Dependencies
+# Abhängigkeiten
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # App
 COPY app.py .
 
-# s6-Services (starten unseren Dienst korrekt als PID 1 via /init)
+# s6-Services einspielen
 COPY rootfs/ /
 
-# interner Port für Ingress
+# WICHTIG: Service-Runfile ausführbar machen (und keine CRLFs!)
+RUN chmod +x /etc/services.d/shelly/run
+
+# Ingress-Port intern
 EXPOSE 8099
 
-# Kein CMD/ENTRYPOINT ändern – Base-Image startet /init (s6)
+# WICHTIG: s6 als PID 1
+ENTRYPOINT ["/init"]
