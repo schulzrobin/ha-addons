@@ -1,0 +1,5 @@
+#!/bin/sh
+set -eu
+
+# Gunicorn in der venv starten (Pfad kommt aus Dockerfile-ENV PATH)
+exec gunicorn -b 0.0.0.0:8099 app:app --workers 4 --threads 2 --timeout 90

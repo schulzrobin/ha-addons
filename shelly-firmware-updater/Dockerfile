@@ -20,13 +20,14 @@ RUN pip install --no-cache-dir -r requirements.txt
 # App
 COPY app.py .
 
-# s6-Dateien
+# s6 service
 COPY rootfs/ /
 
-# Rechte sicherstellen
-RUN [ -f /etc/services.d/shelly/run ] && chmod +x /etc/services.d/shelly/run || true \
- && [ -f /etc/cont-init.d/10-clean-logs ] && chmod +x /etc/cont-init.d/10-clean-logs || true
+# Rechte sicherstellen (und CRLF vermeiden)
+RUN chmod +x /etc/services.d/web/run
 
 # Ingress-Port intern
 EXPOSE 8099
-# WICHTIG: KEIN ENTRYPOINT/CMD setzen – Base-Image startet /init (s6) automatisch
+
+# WICHTIG: s6-Init explizit als PID 1
+ENTRYPOINT ["/init"]
