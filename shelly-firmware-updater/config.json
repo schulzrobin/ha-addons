@@ -1,6 +1,6 @@
 {
   "name": "Shelly Firmware Updater",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "slug": "shelly_firmware_updater",
   "description": "Firmware Updater für Shelly Gen.2 Geräte mit Ingress",
   "arch": ["amd64", "aarch64", "armv7", "armhf", "i386"],
@@ -9,12 +9,5 @@
   "ingress": true,
   "ingress_port": 8099,
   "options": {},
-  "schema": {},
-  "build_from": {
-    "amd64": "ghcr.io/home-assistant/amd64-base-python:3.11",
-    "aarch64": "ghcr.io/home-assistant/aarch64-base-python:3.11",
-    "armv7": "ghcr.io/home-assistant/armv7-base-python:3.11",
-    "armhf": "ghcr.io/home-assistant/armhf-base-python:3.11",
-    "i386": "ghcr.io/home-assistant/i386-base-python:3.11"
-  }
+  "schema": {}
 }
