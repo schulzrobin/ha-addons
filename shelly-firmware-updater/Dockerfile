@@ -13,21 +13,20 @@ WORKDIR /app
 RUN apk add --no-cache python3 py3-pip py3-virtualenv \
  && python3 -m venv "$VIRTUAL_ENV"
 
-# Dependencies in venv
+# Deps in venv
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # App
 COPY app.py .
 
-# s6 service einspielen
+# s6-Dateien
 COPY rootfs/ /
 
-# Ausführbar + LF prüfen
-RUN chmod +x /etc/services.d/shelly/run
+# Rechte sicherstellen
+RUN [ -f /etc/services.d/shelly/run ] && chmod +x /etc/services.d/shelly/run || true \
+ && [ -f /etc/cont-init.d/10-clean-logs ] && chmod +x /etc/cont-init.d/10-clean-logs || true
 
 # Ingress-Port intern
 EXPOSE 8099
-
-# WICHTIG: s6 als PID 1 starten
-ENTRYPOINT ["/init"]
+# WICHTIG: KEIN ENTRYPOINT/CMD setzen – Base-Image startet /init (s6) automatisch

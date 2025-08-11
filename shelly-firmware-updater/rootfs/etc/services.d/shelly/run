@@ -1,4 +1,4 @@
-#!/usr/bin/with-contenv bashio
+#!/bin/sh
 set -e
-# Starte Gunicorn auf dem Ingress-Port
-exec gunicorn -b 0.0.0.0:8099 app:app --workers 4 --threads 2 --timeout 90
+# Gunicorn in der venv starten (Pfad im Dockerfile gesetzt)
+exec /opt/venv/bin/gunicorn -b 0.0.0.0:8099 app:app --workers 4 --threads 2 --timeout 90
