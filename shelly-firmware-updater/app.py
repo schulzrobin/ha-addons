@@ -8,10 +8,8 @@ IP_BASE = "192.168.5."  # ggf. an eigenes Netz anpassen
 
 def find_shellys():
     devices = []
-
     def check_ip(ip):
         try:
-            # Name (best effort)
             name = "Unbekannt"
             try:
                 r_info = requests.get(f"http://{ip}/rpc/Shelly.GetDeviceInfo", timeout=1)
@@ -19,8 +17,6 @@ def find_shellys():
                     name = r_info.json().get("name", name)
             except requests.RequestException:
                 pass
-
-            # Firmware-Update-Info
             r_upd = requests.get(f"http://{ip}/rpc/Shelly.CheckForUpdate", timeout=1)
             if r_upd.status_code == 200:
                 data = r_upd.json()
@@ -34,7 +30,6 @@ def find_shellys():
     with ThreadPoolExecutor(max_workers=50) as ex:
         ex.map(check_ip, ips)
 
-    # Nach IP numerisch sortieren
     devices.sort(key=lambda d: tuple(int(p) for p in d["ip"].split(".")))
     return devices
 
@@ -57,7 +52,6 @@ def api_update():
 
 @app.route("/")
 def index():
-    # Wichtig: relative fetch-Pfade (kein führender Slash) -> Ingress-kompatibel
     html = """
 <!DOCTYPE html>
 <html lang="de">
@@ -120,8 +114,7 @@ async function fetchDevices() {
     tbody.innerHTML = '';
 
     try {
-        // Wichtig: RELATIVER Pfad (kein führender '/'), so funktioniert es via Ingress
-        const resp = await fetch("api/devices");
+        const resp = await fetch("api/devices"); // RELATIV für Ingress
         if (!resp.ok) throw new Error("Netzwerkantwort nicht OK: " + resp.status);
         const devices = await resp.json();
 
@@ -193,6 +186,6 @@ window.addEventListener('load', fetchDevices);
     """
     return render_template_string(html)
 
-# Nur für lokalen Test (im Add-on startet gunicorn)
+# Für lokalen Test (im Add-on startet gunicorn)
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8099)
