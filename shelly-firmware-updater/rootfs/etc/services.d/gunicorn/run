@@ -1,0 +1,27 @@
+#!/usr/bin/with-contenv bash
+# shellcheck shell=bash
+
+# Optionen aus /data/options.json lesen und als Env setzen
+IP_BASE_DEFAULT="192.168.5."
+if [ -f /data/options.json ]; then
+  export IP_BASE="$(jq -r '.ip_base // empty' /data/options.json)"
+fi
+if [ -z "$IP_BASE" ] || [ "$IP_BASE" = "null" ]; then
+  export IP_BASE="${IP_BASE_DEFAULT}"
+fi
+
+# Logs-Verzeichnis sicherstellen
+mkdir -p /data/logs
+
+cd /usr/src/app/app || exit 1
+
+# Start mit gunicorn (Ingress läuft über den Supervisor-Reverse-Proxy)
+# --forwarded-allow-ips=* erlaubt X-Forwarded-* vom HA Proxy
+exec gunicorn app:app \
+  --bind 0.0.0.0:${APP_PORT} \
+  --workers 2 \
+  --threads 8 \
+  --timeout 60 \
+  --access-logfile - \
+  --error-logfile - \
+  --forwarded-allow-ips="*"
