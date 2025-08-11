@@ -1,4 +1,8 @@
 #!/usr/bin/with-contenv bashio
 set -e
-# Fester Ingress-Port (wie in config.json)
-exec gunicorn -b 0.0.0.0:8099 app:app --workers 4 --threads 2 --timeout 90
+
+# Standard-Ingress-Port (aus config.json). Falls Supervisor ENV setzt, das nutzen:
+PORT="${INGRESS_PORT:-8099}"
+
+# Gunicorn aus der venv starten
+exec gunicorn -b 0.0.0.0:${PORT} app:app --workers 4 --threads 2 --timeout 90

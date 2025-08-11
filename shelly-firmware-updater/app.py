@@ -1,15 +1,32 @@
 from flask import Flask, jsonify, request, render_template_string
 import requests
 from concurrent.futures import ThreadPoolExecutor
+import logging
+from logging.handlers import RotatingFileHandler
+import os
 
 app = Flask(__name__)
 
-IP_BASE = "192.168.5."  # ggf. an eigenes Netz anpassen
+# --- Logging in persistentes Verzeichnis (/data/logs/app.log) ---
+LOG_DIR = "/data/logs"
+os.makedirs(LOG_DIR, exist_ok=True)
+log_path = os.path.join(LOG_DIR, "app.log")
+handler = RotatingFileHandler(log_path, maxBytes=2_000_000, backupCount=2)
+formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
+handler.setFormatter(formatter)
+handler.setLevel(logging.INFO)
+app.logger.addHandler(handler)
+app.logger.setLevel(logging.INFO)
+
+# --- Netzwerkscan ---
+IP_BASE = "192.168.5."  # anpassen!
 
 def find_shellys():
     devices = []
+
     def check_ip(ip):
         try:
+            # Name (best effort)
             name = "Unbekannt"
             try:
                 r_info = requests.get(f"http://{ip}/rpc/Shelly.GetDeviceInfo", timeout=1)
@@ -17,6 +34,8 @@ def find_shellys():
                     name = r_info.json().get("name", name)
             except requests.RequestException:
                 pass
+
+            # Firmware-Info
             r_upd = requests.get(f"http://{ip}/rpc/Shelly.CheckForUpdate", timeout=1)
             if r_upd.status_code == 200:
                 data = r_upd.json()
@@ -30,9 +49,12 @@ def find_shellys():
     with ThreadPoolExecutor(max_workers=50) as ex:
         ex.map(check_ip, ips)
 
+    # IPs numerisch sortieren
     devices.sort(key=lambda d: tuple(int(p) for p in d["ip"].split(".")))
+    app.logger.info("Scan abgeschlossen, %d Geräte gefunden", len(devices))
     return devices
 
+# --- API ---
 @app.route("/api/devices")
 def api_devices():
     return jsonify(find_shellys())
@@ -45,11 +67,15 @@ def api_update():
     try:
         r = requests.get(f"http://{ip}/rpc/Shelly.Update", timeout=5)
         if r.status_code == 200:
+            app.logger.info("Update gestartet: %s", ip)
             return jsonify({"success": True, "message": f"Update gestartet für {ip}"})
+        app.logger.warning("Update-Fehler %s: %s", ip, r.text)
         return jsonify({"success": False, "message": f"Fehler beim Update für {ip}: {r.text}"}), 500
     except requests.RequestException as e:
+        app.logger.error("Netzwerkfehler bei Update %s: %s", ip, e)
         return jsonify({"success": False, "message": f"Netzwerkfehler: {e}"}), 500
 
+# --- UI (Ingress-kompatibel: relative fetch-Pfade "api/...") ---
 @app.route("/")
 def index():
     html = """
@@ -114,7 +140,7 @@ async function fetchDevices() {
     tbody.innerHTML = '';
 
     try {
-        const resp = await fetch("api/devices"); // RELATIV für Ingress
+        const resp = await fetch("api/devices"); // RELATIV: Ingress-kompatibel
         if (!resp.ok) throw new Error("Netzwerkantwort nicht OK: " + resp.status);
         const devices = await resp.json();
 
@@ -186,6 +212,20 @@ window.addEventListener('load', fetchDevices);
     """
     return render_template_string(html)
 
-# Für lokalen Test (im Add-on startet gunicorn)
+# optionaler /api/update_all Endpoint (falls genutzt vom Frontend)
+@app.route("/api/update_all", methods=["POST"])
+def api_update_all():
+    devices = find_shellys()
+    results = []
+    for d in devices:
+        ip = d["ip"]
+        try:
+            r = requests.get(f"http://{ip}/rpc/Shelly.Update", timeout=5)
+            results.append({"ip": ip, "success": r.status_code == 200})
+        except requests.RequestException:
+            results.append({"ip": ip, "success": False})
+    return jsonify(results)
+
+# Für lokalen Test (im Add-on startet s6+gunicorn)
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8099)
