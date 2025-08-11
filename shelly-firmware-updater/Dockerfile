@@ -1,5 +1,4 @@
-# Nutze das Python-Base-Image von Home Assistant (multi-arch-fähig)
-ARG BUILD_FROM=ghcr.io/home-assistant/{arch}-base-python:3.11
+ARG BUILD_FROM
 FROM ${BUILD_FROM}
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -7,16 +6,14 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /app
 
-# Dependencies
 COPY requirements.txt .
 RUN pip3 install --no-cache-dir -r requirements.txt
 
-# App
 COPY app.py .
 COPY run.sh /run.sh
 RUN chmod +x /run.sh
 
+# Ingress-Port
 EXPOSE 8099
 
-# S6-Overlay startet /run.sh
 CMD [ "/run.sh" ]
