@@ -1,5 +1,5 @@
 {
-  "name": "Shelly Firmware Updater",
+  "name": "Shelly Firmware Updater (outdated)",
   "version": "1.0.0",
   "slug": "shelly_firmware_updater",
   "description": "Firmware Updater für Shelly Gen.2 Geräte mit Ingress",
