@@ -1,0 +1,16 @@
+{
+  "name": "Shelly Firmware Updater",
+  "version": "1.0.0",
+  "slug": "shelly-firmware-updater",
+  "description": "Firmware Updater für Shelly Gen.2 Geräte mit Ingress",
+  "arch": ["amd64", "armv7", "armhf", "aarch64"],
+  "startup": "application",
+  "boot": "auto",
+  "options": {},
+  "schema": {},
+  "ports": {
+    "5000/tcp": 5000
+  },
+  "ingress": true,
+  "ingress_port": 5000
+}
