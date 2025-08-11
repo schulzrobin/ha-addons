@@ -9,26 +9,25 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /app
 
-# Python + venv (PEP-668-konform, kein systemweites pip)
+# Python + venv (PEP-668-konform)
 RUN apk add --no-cache python3 py3-pip py3-virtualenv \
  && python3 -m venv "$VIRTUAL_ENV"
 
-# Dependencies (in venv)
+# Dependencies in venv
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # App
 COPY app.py .
 
-# s6 Dienste + Init-Hooks einspielen
+# s6 service einspielen
 COPY rootfs/ /
 
-# Ausführbar machen (falls Git-Rechte fehlen)
-RUN chmod +x /etc/services.d/shelly/run \
- && chmod +x /etc/cont-init.d/10-clean-logs
+# Ausführbar + LF prüfen
+RUN chmod +x /etc/services.d/shelly/run
 
-# Ingress-Port (intern)
+# Ingress-Port intern
 EXPOSE 8099
 
-# Sehr wichtig: s6 als PID 1 starten
+# WICHTIG: s6 als PID 1 starten
 ENTRYPOINT ["/init"]

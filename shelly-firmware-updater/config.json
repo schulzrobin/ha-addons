@@ -1,6 +1,6 @@
 {
   "name": "Shelly Firmware Updater",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "slug": "shelly-firmware-updater",
   "description": "Firmware Updater für Shelly Gen.2 Geräte mit Ingress",
   "arch": ["amd64", "aarch64", "armv7", "armhf", "i386"],
