@@ -1,46 +1,46 @@
 from flask import Flask, jsonify, request, render_template_string
 import requests
 from concurrent.futures import ThreadPoolExecutor
-import logging
 
 app = Flask(__name__)
 
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-
-IP_BASE = "192.168.5."  # Passe das Netzwerk an
+IP_BASE = "192.168.5."  # ggf. an eigenes Netz anpassen
 
 def find_shellys():
     devices = []
 
     def check_ip(ip):
         try:
-            url = f"http://{ip}/rpc/Shelly.CheckForUpdate"
-            resp = requests.get(url, timeout=1)
-            if resp.status_code == 200:
-                data = resp.json()
+            # Name (best effort)
+            name = "Unbekannt"
+            try:
+                r_info = requests.get(f"http://{ip}/rpc/Shelly.GetDeviceInfo", timeout=1)
+                if r_info.status_code == 200:
+                    name = r_info.json().get("name", name)
+            except requests.RequestException:
+                pass
+
+            # Firmware-Update-Info
+            r_upd = requests.get(f"http://{ip}/rpc/Shelly.CheckForUpdate", timeout=1)
+            if r_upd.status_code == 200:
+                data = r_upd.json()
                 version = data.get("stable", {}).get("version")
-                name = data.get("name", "Unbekannt")
                 if version:
-                    devices.append({"ip": ip, "version": version, "name": name})
+                    devices.append({"ip": ip, "name": name, "version": version})
         except requests.RequestException:
             pass
 
-    with ThreadPoolExecutor(max_workers=50) as executor:
-        executor.map(check_ip, [f"{IP_BASE}{i}" for i in range(1, 255)])
+    ips = [f"{IP_BASE}{i}" for i in range(1, 255)]
+    with ThreadPoolExecutor(max_workers=50) as ex:
+        ex.map(check_ip, ips)
 
-    # Sortiere nach IP numerisch
-    def ip_key(dev):
-        return tuple(int(part) for part in dev["ip"].split('.'))
-    devices.sort(key=ip_key)
-
+    # Nach IP numerisch sortieren
+    devices.sort(key=lambda d: tuple(int(p) for p in d["ip"].split(".")))
     return devices
-
 
 @app.route("/api/devices")
 def api_devices():
-    devices = find_shellys()
-    return jsonify(devices)
-
+    return jsonify(find_shellys())
 
 @app.route("/api/update", methods=["POST"])
 def api_update():
@@ -48,102 +48,50 @@ def api_update():
     if not ip:
         return jsonify({"success": False, "message": "IP-Adresse fehlt"}), 400
     try:
-        resp = requests.get(f"http://{ip}/rpc/Shelly.Update", timeout=5)
-        if resp.status_code == 200:
+        r = requests.get(f"http://{ip}/rpc/Shelly.Update", timeout=5)
+        if r.status_code == 200:
             return jsonify({"success": True, "message": f"Update gestartet für {ip}"})
-        else:
-            return jsonify({"success": False, "message": f"Fehler beim Update für {ip}: {resp.text}"}), 500
+        return jsonify({"success": False, "message": f"Fehler beim Update für {ip}: {r.text}"}), 500
     except requests.RequestException as e:
-        return jsonify({"success": False, "message": f"Netzwerkfehler: {str(e)}"}), 500
-
-
-@app.route("/api/update_all", methods=["POST"])
-def api_update_all():
-    devices = find_shellys()
-    results = []
-    for device in devices:
-        ip = device["ip"]
-        try:
-            resp = requests.get(f"http://{ip}/rpc/Shelly.Update", timeout=5)
-            if resp.status_code == 200:
-                results.append({"ip": ip, "success": True})
-            else:
-                results.append({"ip": ip, "success": False})
-        except requests.RequestException:
-            results.append({"ip": ip, "success": False})
-    return jsonify(results)
-
+        return jsonify({"success": False, "message": f"Netzwerkfehler: {e}"}), 500
 
 @app.route("/")
 def index():
+    # Wichtig: relative fetch-Pfade (kein führender Slash) -> Ingress-kompatibel
     html = """
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Shelly Firmware Updater</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f9f9f9;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        #loader {
-            font-size: 1.2em;
-            margin-top: 50px;
-        }
-        #loader span {
-            margin-left: 10px;
-        }
-        table {
-            width: 100%;
-            max-width: 700px;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        th, td {
-            border: 1px solid #ccc;
-            padding: 8px 12px;
-            text-align: left;
-        }
-        th {
-            background: #eee;
-        }
-        button {
-            padding: 6px 12px;
-            background: #007bff;
-            border: none;
-            color: white;
-            cursor: pointer;
-            border-radius: 4px;
-        }
-        button:disabled {
-            background: #999;
-            cursor: not-allowed;
-        }
-        #topbar {
-            width: 100%;
-            max-width: 700px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-    </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Shelly Firmware Updater</title>
+<style>
+    body { font-family: Arial, sans-serif; background:#f9f9f9; padding:20px; display:flex; flex-direction:column; align-items:center; }
+    #loader { display:none; font-size:1.1em; margin-top:40px; }
+    .spinner { border:8px solid #e9e9e9; border-top:8px solid #007BFF; border-radius:50%; width:48px; height:48px; animation:spin 1s linear infinite; margin:0 auto 12px; }
+    @keyframes spin { 0%{transform:rotate(0)} 100%{transform:rotate(360deg)} }
+    table { width:100%; max-width:900px; border-collapse:collapse; margin-top:20px; display:none; }
+    th,td { border:1px solid #ccc; padding:10px; text-align:left; }
+    th { background:#f4f4f4; }
+    button { padding:6px 12px; background:#007BFF; border:none; color:#fff; cursor:pointer; border-radius:4px; }
+    #topbar { width:100%; max-width:900px; display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+    #error { color:red; font-weight:bold; display:none; }
+</style>
 </head>
 <body>
     <div id="topbar">
         <div id="device-count">Gefundene Geräte: 0</div>
         <button id="update-all" disabled>Alle aktualisieren</button>
     </div>
-    <div id="loader" style="display: none;">
-        🔄 Shellys werden im Netzwerk gesucht...
+
+    <div id="loader">
+        <div class="spinner" aria-hidden="true"></div>
+        <div>🔄 Shellys werden im Netzwerk gesucht...</div>
     </div>
-    <table id="device-table" style="display:none;">
+
+    <div id="error"></div>
+
+    <table id="device-table" aria-live="polite">
         <thead>
             <tr>
                 <th>IP-Adresse</th>
@@ -162,22 +110,25 @@ async function fetchDevices() {
     const tbody = document.getElementById('device-tbody');
     const deviceCount = document.getElementById('device-count');
     const updateAllBtn = document.getElementById('update-all');
+    const errorBox = document.getElementById('error');
 
     loader.style.display = 'block';
     table.style.display = 'none';
+    errorBox.style.display = 'none';
     updateAllBtn.disabled = true;
     deviceCount.textContent = "Gefundene Geräte: 0";
+    tbody.innerHTML = '';
 
     try {
-        const response = await fetch("api/devices");
-        if (!response.ok) throw new Error(`Netzwerkantwort nicht OK: ${response.status}`);
-        const devices = await response.json();
+        // Wichtig: RELATIVER Pfad (kein führender '/'), so funktioniert es via Ingress
+        const resp = await fetch("api/devices");
+        if (!resp.ok) throw new Error("Netzwerkantwort nicht OK: " + resp.status);
+        const devices = await resp.json();
 
         loader.style.display = 'none';
 
-        if (devices.length === 0) {
+        if (!devices || devices.length === 0) {
             deviceCount.textContent = "Keine Shelly-Geräte im Netzwerk gefunden.";
-            updateAllBtn.disabled = true;
             table.style.display = 'none';
             return;
         }
@@ -186,21 +137,20 @@ async function fetchDevices() {
         updateAllBtn.disabled = false;
         table.style.display = 'table';
 
-        tbody.innerHTML = '';
-        for (const device of devices) {
+        for (const d of devices) {
             const tr = document.createElement('tr');
-
             tr.innerHTML = `
-                <td>${device.ip}</td>
-                <td>${device.name || 'Unbekannt'}</td>
-                <td>${device.version}</td>
-                <td><button onclick="updateDevice('${device.ip}', this)">Update</button></td>
+                <td>${d.ip}</td>
+                <td>${d.name || 'Unbekannt'}</td>
+                <td>${d.version || 'Unbekannt'}</td>
+                <td><button onclick="updateDevice('${d.ip}', this)">Update</button></td>
             `;
             tbody.appendChild(tr);
         }
-    } catch (error) {
+    } catch (e) {
         loader.style.display = 'none';
-        alert("Fehler beim Laden der Geräte: " + error.message);
+        errorBox.textContent = "Fehler beim Laden der Geräte: " + e.message;
+        errorBox.style.display = 'block';
     }
 }
 
@@ -209,8 +159,8 @@ async function updateDevice(ip, button) {
     try {
         const resp = await fetch("api/update", {
             method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({ip})
+            headers: {"Content-Type":"application/json"},
+            body: JSON.stringify({ ip })
         });
         const result = await resp.json();
         alert(result.message);
@@ -227,8 +177,8 @@ document.getElementById('update-all').addEventListener('click', async () => {
     try {
         const resp = await fetch("api/update_all", { method: "POST" });
         const results = await resp.json();
-        let successCount = results.filter(r => r.success).length;
-        alert(`Updates gestartet für ${successCount} Geräte.`);
+        const ok = results.filter(r => r.success).length;
+        alert(`Updates gestartet für ${ok} Geräte.`);
     } catch (e) {
         alert("Fehler beim Update aller Geräte: " + e.message);
     } finally {
@@ -236,13 +186,13 @@ document.getElementById('update-all').addEventListener('click', async () => {
     }
 });
 
-window.onload = fetchDevices;
+window.addEventListener('load', fetchDevices);
 </script>
 </body>
 </html>
     """
     return render_template_string(html)
 
-
+# Nur für lokalen Test (im Add-on startet gunicorn)
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    app.run(host="0.0.0.0", port=8099)

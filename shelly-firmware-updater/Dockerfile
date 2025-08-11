@@ -1,16 +1,22 @@
-ARG BUILD_FROM=ghcr.io/home-assistant/amd64-base-python:3.10
-
+# Nutze das Python-Base-Image von Home Assistant (multi-arch-fähig)
+ARG BUILD_FROM=ghcr.io/home-assistant/{arch}-base-python:3.11
 FROM ${BUILD_FROM}
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
+# Dependencies
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip3 install --no-cache-dir -r requirements.txt
 
+# App
 COPY app.py .
-COPY run.sh .
-RUN chmod +x run.sh
+COPY run.sh /run.sh
+RUN chmod +x /run.sh
 
-EXPOSE 5000
+EXPOSE 8099
 
-CMD ["./run.sh"]
+# S6-Overlay startet /run.sh
+CMD [ "/run.sh" ]
