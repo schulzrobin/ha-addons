@@ -1,0 +1,11 @@
+name: "Test Addon"
+description: "Test Addon zum experimentieren und neue Funktionen testen."
+version: "1.0.0"
+slug: "test"
+init: false
+arch:
+  - aarch64
+  - amd64
+  - armhf
+  - armv7
+  - i386
