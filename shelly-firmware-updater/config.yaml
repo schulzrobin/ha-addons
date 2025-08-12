@@ -1,6 +1,6 @@
 name: Shelly Firmware Updater
 version: "1.0.0"
-slug: shelly-firmware-updater
+slug: shelly_firmware_updater
 description: Scannt Shelly-Geräte im LAN und stößt Firmware-Updates an (Ingress, Flask + gunicorn).
 arch:
   - aarch64
