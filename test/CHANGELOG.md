@@ -2,6 +2,7 @@
 
 - Changed Logfile
 - Added Python3 Server
+- Added Options
 
 1.0.2:
 
