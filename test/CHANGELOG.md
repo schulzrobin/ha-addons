@@ -1,6 +1,7 @@
 1.0.3:
 
-- Change
+- Changed Logfile
+- Added Python3 Server
 
 1.0.2:
 
