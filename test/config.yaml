@@ -1,6 +1,6 @@
 name: "Test Addon"
 description: "Test Addon zum experimentieren und neue Funktionen testen."
-version: "1.0.0"
+version: "1.0.1"
 slug: "test"
 init: false
 arch:
