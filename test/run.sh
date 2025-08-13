@@ -1,7 +1,6 @@
 #!/usr/bin/with-contenv bashio
 
 CONFIG_PATH=/data/options.json
-
 TARGET="$(bashio::config 'target')"
 
 echo "Hello world!"
