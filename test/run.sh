@@ -3,3 +3,4 @@
 echo "Hello world!"
 
 python3 -m http.server 8099
+echo "server gestartet."
