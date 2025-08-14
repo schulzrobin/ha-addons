@@ -1,6 +1,7 @@
 1.0.6:
 
 - Added options
+- Show Addon Version in Log
 
 1.0.3:
 
