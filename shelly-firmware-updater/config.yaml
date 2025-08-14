@@ -24,4 +24,4 @@ options:
 schema:
   ip_base: str
 # image kann bleiben oder gelöscht werden; ohne image baut der Supervisor lokal
-image: "local/shelly_firmware_updater:{arch}-1.0.0"
+image: "local/shelly-firmware-updater:{arch}-1.0.0"
