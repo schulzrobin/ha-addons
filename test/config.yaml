@@ -1,6 +1,6 @@
 name: "Test Addon"
 description: "Test Addon zum experimentieren und neue Funktionen testen."
-version: "1.0.7"
+version: "1.0.8"
 slug: "test"
 init: false
 arch:
@@ -16,3 +16,6 @@ options:
   username: homeassistant
 schema:
   username: str
+message: "custom things"
+size: 15
+count: 1.2
