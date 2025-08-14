@@ -12,13 +12,6 @@ ingress: true
 ingress_port: 8099
 panel_title: Shelly Updater
 panel_icon: mdi:update
-map:
-  - config:rw
-  - ssl:rw
-  - share:rw
-  - media:rw
-  - addons:rw
-  - backup:rw
 options:
   ip_base: "192.168.5."
 schema:
