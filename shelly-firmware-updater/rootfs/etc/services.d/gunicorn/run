@@ -1,4 +1,4 @@
-#!/usr/bin/with-contenv bash
+#!/usr/bin/with-contenv sh
 set -e
 
 IP_BASE_DEFAULT="192.168.5."
