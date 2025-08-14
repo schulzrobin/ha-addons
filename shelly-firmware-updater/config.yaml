@@ -12,8 +12,6 @@ startup: services
 init: false
 ingress: true
 ingress_port: 8099
-panel_title: Shelly Updater
-panel_icon: mdi:update
 options:
   ip_base: "192.168.5."
 schema:
