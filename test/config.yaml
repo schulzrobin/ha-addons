@@ -12,3 +12,9 @@ arch:
 #ports:
 #  8000/tcp: 8000
 ingress: true
+options:
+  username: homeassistant
+  password: null
+schema:
+  username: str
+  password: password
