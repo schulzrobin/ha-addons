@@ -14,7 +14,5 @@ arch:
 ingress: true
 options:
   username: homeassistant
-  password: null
 schema:
   username: str
-  password: str
