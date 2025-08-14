@@ -3,8 +3,9 @@
 CONFIG_PATH=/data/options.json
 TARGET="$(bashio::config 'target')"
 
+ADDON_VERSION=$(jq -r '.version' /data/options.json 2>/dev/null || echo "unknown")
+
 echo "Hello world!"
-echo "Version: 1.0.4"
 echo "server starten..."
-echo TARGET
+echo "Version: $ADDON_VERSION"
 python3 -m http.server 8099
