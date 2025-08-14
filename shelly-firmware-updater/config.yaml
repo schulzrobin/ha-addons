@@ -1,7 +1,7 @@
 name: Shelly Firmware Updater
-version: "1.0.0"
+version: "1.0.1"
 slug: shelly-firmware-updater
-description: Scannt Shelly-Geräte im LAN und stößt Firmware-Updates an (Ingress, Flask + gunicorn).
+description: Shelly Gen. 2/3 API Device Scanner. Scanner will be looking for devices with new stable firmware update available.
 panel_icon: "mdi:update"
 arch:
   - aarch64
