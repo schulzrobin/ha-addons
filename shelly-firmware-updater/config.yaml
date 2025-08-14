@@ -16,5 +16,3 @@ options:
   ip_base: "192.168.5."
 schema:
   ip_base: str
-# image kann bleiben oder gelöscht werden; ohne image baut der Supervisor lokal
-image: "local/shelly_firmware_updater:{arch}-1.0.0"
