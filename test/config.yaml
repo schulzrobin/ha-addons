@@ -17,4 +17,4 @@ options:
   password: null
 schema:
   username: str
-  password: password
+  password: str
