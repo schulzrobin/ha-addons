@@ -21,6 +21,9 @@ COPY app ./app
 # s6 service
 COPY rootfs/ /
 
+# run/finish ausführbar machen (wichtig)
+RUN chmod +x /etc/services.d/gunicorn/run
+
 # Environment
 ENV PATH="${VIRTUAL_ENV}/bin:${PATH}" \
     PYTHONUNBUFFERED=1 \
