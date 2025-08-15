@@ -1,3 +1,7 @@
+1.0.3:
+
+▫️removed Healthcheck
+
 1.0.2:
 
 ▫️added Documentation
