@@ -1,1 +1,3 @@
-# ha-addons
+# Home Assistant Addons
+
+## Shelly Firmware Updater
