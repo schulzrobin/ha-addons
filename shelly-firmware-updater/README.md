@@ -1,17 +1,33 @@
-# Home Assistant Add-on: Shelly Firmware Updater
+# Shelly Firmware Updater – Home Assistant Add-on
 
-Shelly Gen.2/3 scanner
+![Shelly Logo](https://user-images.githubusercontent.com/0000000/shelly-logo.png) <!-- optional: eigenes Logo einfügen -->
 
-![Supports aarch64 Architecture][aarch64-shield] ![Supports amd64 Architecture][amd64-shield] ![Supports armhf Architecture][armhf-shield] ![Supports armv7 Architecture][armv7-shield] ![Supports i386 Architecture][i386-shield]
+## Übersicht
+Der **Shelly Firmware Updater** ist ein Home-Assistant-Add-on, das automatisch Shelly-Geräte im lokalen Netzwerk erkennt und deren Firmware aktualisieren kann – direkt aus der Home-Assistant-Oberfläche heraus.  
+Es läuft vollständig über **Ingress**, sodass keine Portfreigaben oder separaten Weboberflächen nötig sind.
 
-## About
+## Funktionen
+- 🔍 **Netzwerkscan** – Durchsucht den angegebenen IP-Bereich (`ip_base`) nach Shelly-Geräten.
+- 📦 **Firmware-Check** – Zeigt die aktuelle Firmwareversion an und erkennt Updates.
+- ⬆️ **Update starten** – Einzel- oder Massenupdate der gefundenen Geräte.
+- 🪵 **Persistente Logs** – Protokolliert alle Aktionen in `/data/logs/app.log`.
+- 📱 **Responsive UI** – Funktioniert auf Desktop und Mobilgeräten.
+- 🔒 **Ingress** – Läuft sicher im Home-Assistant-Supervisor.
 
-This Addon scans your network for Shelly Gen.2/3 devices.
+## Screenshots
+*(Füge hier Screenshots deiner UI ein, um den Ablauf zu zeigen)*
 
-It allows to update one device at time or you can mass update all available devices.
+## Installation
+### 1. Add-on-Verzeichnis erstellen
+Kopiere die Add-on-Dateien in den Ordner `/addons/shelly-firmware-updater` auf deinem Home Assistant Host (z. B. per Samba oder SSH).
 
-[aarch64-shield]: https://img.shields.io/badge/aarch64-yes-green.svg
-[amd64-shield]: https://img.shields.io/badge/amd64-yes-green.svg
-[armhf-shield]: https://img.shields.io/badge/armhf-yes-green.svg
-[armv7-shield]: https://img.shields.io/badge/armv7-yes-green.svg
-[i386-shield]: https://img.shields.io/badge/i386-yes-green.svg
+### 2. Add-on im Home Assistant hinzufügen
+- **Einstellungen → Add-ons → Add-on-Store**
+- Rechts oben auf **⋮ → Neu laden** klicken  
+  (falls nicht sichtbar, im Benutzerprofil „Erweiterter Modus“ aktivieren)
+- Das Add-on **Shelly Firmware Updater** sollte nun erscheinen.
+
+### 3. Konfiguration
+Beispielkonfiguration in der Add-on-UI:
+```yaml
+ip_base: "192.168.5."
