@@ -29,4 +29,4 @@ ENV PATH="${VIRTUAL_ENV}/bin:${PATH}" \
     PYTHONUNBUFFERED=1 \
     APP_PORT=8099
 
-HEALTHCHECK --interval=30s --timeout=5s --retries=5 CMD wget -qO- http://127.0.0.1:${APP_PORT}/ || exit 1
+# HEALTHCHECK --interval=30s --timeout=5s --retries=5 CMD wget -qO- http://127.0.0.1:${APP_PORT}/ || exit 1
