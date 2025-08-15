@@ -3,6 +3,7 @@ version: "1.0.1"
 slug: shelly-firmware-updater
 description: Shelly Gen. 2/3 API Device Scanner. Scanner will be looking for devices with new stable firmware update available.
 panel_icon: "mdi:update"
+url: "https://github.com/schulzrobin/ha-addons/tree/main/shelly-firmware-updater"
 arch:
   - aarch64
   - amd64
