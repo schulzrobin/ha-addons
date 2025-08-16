@@ -1,5 +1,5 @@
 name: "Example"
-description: Example Addon"
+description: Example Addon
 version: "1.0.0"
 slug: "example"
 init: false
