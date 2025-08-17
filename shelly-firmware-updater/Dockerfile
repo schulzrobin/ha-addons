@@ -1,33 +1,32 @@
 ARG BUILD_FROM=ghcr.io/home-assistant/amd64-base:latest
 FROM ${BUILD_FROM}
-SHELL ["/bin/ash","-o","pipefail","-c"]
 
-ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1 \
-    VIRTUAL_ENV=/opt/venv \
-    PATH="/opt/venv/bin:$PATH"
+WORKDIR /usr/src/app
 
-WORKDIR /app
+# Systempakete
+RUN apk add --no-cache python3 py3-pip jq
 
-# Python + venv (PEP-668-konform)
-RUN apk add --no-cache python3 py3-pip py3-virtualenv \
- && python3 -m venv "$VIRTUAL_ENV"
+# Python venv vorbereiten (PEP 668 umgehen)
+ENV VIRTUAL_ENV=/opt/venv
+RUN python3 -m venv ${VIRTUAL_ENV} \
+ && ${VIRTUAL_ENV}/bin/pip install --no-cache-dir --upgrade pip
 
-# Deps in venv
+# Requirements installieren (in die venv!)
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN ${VIRTUAL_ENV}/bin/pip install --no-cache-dir -r requirements.txt
 
-# App
-COPY app.py .
+# App-Code
+COPY app ./app
 
 # s6 service
 COPY rootfs/ /
 
-# Rechte sicherstellen (und CRLF vermeiden)
-RUN chmod +x /etc/services.d/web/run
+# run/finish ausführbar machen (wichtig)
+RUN chmod +x /etc/services.d/gunicorn/run
 
-# Ingress-Port intern
-EXPOSE 8099
+# Environment
+ENV PATH="${VIRTUAL_ENV}/bin:${PATH}" \
+    PYTHONUNBUFFERED=1 \
+    APP_PORT=8099
 
-# WICHTIG: s6-Init explizit als PID 1
-ENTRYPOINT ["/init"]
+# HEALTHCHECK --interval=30s --timeout=5s --retries=5 CMD wget -qO- http://127.0.0.1:${APP_PORT}/ || exit 1

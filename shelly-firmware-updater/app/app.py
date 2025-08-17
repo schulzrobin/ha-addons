@@ -1,13 +1,15 @@
+import os
 from flask import Flask, jsonify, request, render_template_string
 import requests
 from concurrent.futures import ThreadPoolExecutor
 import logging
 from logging.handlers import RotatingFileHandler
-import os
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 app = Flask(__name__)
+app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
 
-# --- Logging in persistentes Verzeichnis (/data/logs/app.log) ---
+# --- Logging ins persistente Verzeichnis (/data/logs/app.log) ---
 LOG_DIR = "/data/logs"
 os.makedirs(LOG_DIR, exist_ok=True)
 log_path = os.path.join(LOG_DIR, "app.log")
@@ -19,7 +21,7 @@ app.logger.addHandler(handler)
 app.logger.setLevel(logging.INFO)
 
 # --- Netzwerkscan ---
-IP_BASE = "192.168.5."  # anpassen!
+IP_BASE = os.getenv("IP_BASE", "192.168.5.")  # via Add-on-Optionen überschreibbar
 
 def find_shellys():
     devices = []
@@ -49,7 +51,6 @@ def find_shellys():
     with ThreadPoolExecutor(max_workers=50) as ex:
         ex.map(check_ip, ips)
 
-    # IPs numerisch sortieren
     devices.sort(key=lambda d: tuple(int(p) for p in d["ip"].split(".")))
     app.logger.info("Scan abgeschlossen, %d Geräte gefunden", len(devices))
     return devices
@@ -78,8 +79,7 @@ def api_update():
 # --- UI (Ingress-kompatibel: relative fetch-Pfade "api/...") ---
 @app.route("/")
 def index():
-    html = """
-<!DOCTYPE html>
+    html = """<!DOCTYPE html>
 <html lang="de">
 <head>
 <meta charset="UTF-8" />
@@ -208,11 +208,9 @@ document.getElementById('update-all').addEventListener('click', async () => {
 window.addEventListener('load', fetchDevices);
 </script>
 </body>
-</html>
-    """
+</html>"""
     return render_template_string(html)
 
-# optionaler /api/update_all Endpoint (falls genutzt vom Frontend)
 @app.route("/api/update_all", methods=["POST"])
 def api_update_all():
     devices = find_shellys()
@@ -226,6 +224,6 @@ def api_update_all():
             results.append({"ip": ip, "success": False})
     return jsonify(results)
 
-# Für lokalen Test (im Add-on startet s6+gunicorn)
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8099)
+    port = int(os.getenv("APP_PORT", "8099"))
+    app.run(host="0.0.0.0", port=port)

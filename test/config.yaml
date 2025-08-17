@@ -1,0 +1,24 @@
+name: "Test Addon"
+description: "Test Addon zum experimentieren und neue Funktionen testen."
+version: "1.0.9"
+slug: "test"
+init: false
+arch:
+  - aarch64
+  - amd64
+  - armhf
+  - armv7
+  - i386
+#ports:
+#  8000/tcp: 8000
+ingress: true
+options:
+  username: homeassistant
+  message: "custom things"
+  size: 15
+  count: 1.2
+schema:
+  username: str
+  message: str
+  size: "int(5,20)"
+  count: float

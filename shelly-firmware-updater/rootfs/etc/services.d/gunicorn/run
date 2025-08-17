@@ -1,0 +1,22 @@
+#!/usr/bin/with-contenv sh
+set -e
+
+IP_BASE_DEFAULT="192.168.5."
+if [ -f /data/options.json ]; then
+  export IP_BASE="$(jq -r '.ip_base // empty' /data/options.json)"
+fi
+if [ -z "$IP_BASE" ] || [ "$IP_BASE" = "null" ]; then
+  export IP_BASE="${IP_BASE_DEFAULT}"
+fi
+
+mkdir -p /data/logs
+cd /usr/src/app/app
+
+exec gunicorn app:app \
+  --bind 0.0.0.0:${APP_PORT} \
+  --workers 2 \
+  --threads 8 \
+  --timeout 60 \
+  --access-logfile - \
+  --error-logfile - \
+  --forwarded-allow-ips="*"
