@@ -1,15 +1,32 @@
-ARG BUILD_FROM
-FROM $BUILD_FROM
+ARG BUILD_FROM=ghcr.io/home-assistant/amd64-base:latest
+FROM ${BUILD_FROM}
 
-RUN apk add --no-cache python3 py3-pip
+WORKDIR /usr/src/app
 
-WORKDIR /opt/einkaufsliste
-COPY rootfs/opt/einkaufsliste/ /opt/einkaufsliste/
+# Systempakete
+RUN apk add --no-cache python3 py3-pip jq
 
-RUN pip3 install --no-cache-dir -r /opt/einkaufsliste/requirements.txt
+# Python venv vorbereiten (PEP 668 umgehen)
+ENV VIRTUAL_ENV=/opt/venv
+RUN python3 -m venv ${VIRTUAL_ENV} \
+ && ${VIRTUAL_ENV}/bin/pip install --no-cache-dir --upgrade pip
 
-COPY run.sh /run.sh
-RUN chmod a+x /run.sh
+# Requirements installieren (in die venv!)
+COPY requirements.txt .
+RUN ${VIRTUAL_ENV}/bin/pip install --no-cache-dir -r requirements.txt
 
-EXPOSE 8099
-CMD [ "/run.sh" ]
+# App-Code
+COPY app ./app
+
+# s6 service
+COPY rootfs/ /
+
+# run/finish ausführbar machen (wichtig)
+RUN chmod +x /etc/services.d/gunicorn/run
+
+# Environment
+ENV PATH="${VIRTUAL_ENV}/bin:${PATH}" \
+    PYTHONUNBUFFERED=1 \
+    APP_PORT=8099
+
+# HEALTHCHECK --interval=30s --timeout=5s --retries=5 CMD wget -qO- http://127.0.0.1:${APP_PORT}/ || exit 1

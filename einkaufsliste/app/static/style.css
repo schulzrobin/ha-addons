@@ -1,27 +1,18 @@
  	body {
- 	    background: linear-gradient(#66CCFF, #006699);
- 	    margin-top: 10px;
+ 	    
  	    font-family: Century Gothic;
  	    
  	}
  	#content {
- 	    margin: auto;
- 	    height: auto;
- 	    width: 700px;
  	    background: white;
  	    
  	}
  	h1 {
  	    color: grey;
- 	    text-align: center;
- 	    padding-top: 30px;
- 	    padding-bottom: 15px;
  	    
  	}
  	.ausgabe {
- 	    margin: auto;
  	    background: #D4D4D4;
- 	    width: 650px;
  	    
  	}
  	.ausgabe th {
@@ -33,7 +24,6 @@
  	    
  	}
  	.eingabe {
- 	    margin: auto;
  	    background: lightgrey; 
  	    border: 2px solid;
  	    

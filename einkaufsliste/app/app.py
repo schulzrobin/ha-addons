@@ -1,27 +1,18 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, abort
+from flask import Flask, render_template, request, redirect, url_for, flash
 import os
 import sqlite3
+
 from datetime import datetime
+from dotenv import load_dotenv
 
-class IngressPathMiddleware:
-    def __init__(self, app):
-        self.app = app
-    def __call__(self, environ, start_response):
-        prefix = environ.get("HTTP_X_INGRESS_PATH")
-        if prefix:
-            environ["SCRIPT_NAME"] = prefix
-        return self.app(environ, start_response)
+load_dotenv()
 
-DB_PATH = os.getenv("SQLITE_PATH", "/data/einkaufsliste.db")
-ALLOWED_INGRESS_IP = os.getenv("INGRESS_ALLOWED_IP", "172.30.32.2")
-DISABLE_IP_FILTER = os.getenv("DISABLE_INGRESS_IP_FILTER", "0") == "1"
+DB_PATH = os.getenv("SQLITE_PATH", "einkaufsliste.db")
 
 app = Flask(__name__, static_folder="static", template_folder="templates")
-app.wsgi_app = IngressPathMiddleware(app.wsgi_app)  # type: ignore
 app.secret_key = os.getenv("FLASK_SECRET", "change-me")
 
 def get_conn():
-    os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     return conn
@@ -38,14 +29,6 @@ def init_db():
             )"""
         )
         conn.commit()
-
-@app.before_request
-def enforce_ingress_ip():
-    if DISABLE_IP_FILTER:
-        return
-    remote = request.remote_addr or ""
-    if remote != ALLOWED_INGRESS_IP:
-        abort(403)
 
 @app.get("/")
 def index():
@@ -97,5 +80,4 @@ def delete(item_id: int):
 
 if __name__ == "__main__":
     init_db()
-    port = int(os.getenv("PORT", "8099"))
-    app.run(host="0.0.0.0", port=port, debug=False)
+    app.run(host='0.0.0.0', debug=True)
