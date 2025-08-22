@@ -21,4 +21,4 @@ COPY app ./app
 # run/finish ausführbar machen (wichtig)
 # RUN chmod +x /app.py
 
-CMD [ "python3 app.py" ]
+RUN python3 app.py
