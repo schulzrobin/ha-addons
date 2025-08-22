@@ -18,15 +18,10 @@ RUN ${VIRTUAL_ENV}/bin/pip install --no-cache-dir -r requirements.txt
 # App-Code
 COPY app ./app
 
-# s6 service
-COPY rootfs/ /
-
 # run/finish ausführbar machen (wichtig)
-RUN chmod +x /etc/services.d/gunicorn/run
+RUN chmod +x /app.py
 
 # Environment
 ENV PATH="${VIRTUAL_ENV}/bin:${PATH}" \
     PYTHONUNBUFFERED=1 \
     APP_PORT=8099
-
-# HEALTHCHECK --interval=30s --timeout=5s --retries=5 CMD wget -qO- http://127.0.0.1:${APP_PORT}/ || exit 1
