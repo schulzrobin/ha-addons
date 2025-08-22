@@ -19,6 +19,6 @@ RUN ${VIRTUAL_ENV}/bin/pip install --no-cache-dir -r requirements.txt
 COPY app ./app
 
 # run/finish ausführbar machen (wichtig)
-RUN chmod +x /app.py
+# RUN chmod +x /app.py
 
 CMD [ "python3 app.py" ]
