@@ -21,4 +21,7 @@ COPY app ./app
 # run/finish ausführbar machen (wichtig)
 # RUN chmod +x /app.py
 
-RUN python3 app.py
+# Environment
+ENV PATH="${VIRTUAL_ENV}/bin:${PATH}" \
+    PYTHONUNBUFFERED=1 \
+    APP_PORT=8099
