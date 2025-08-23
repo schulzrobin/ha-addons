@@ -3,6 +3,7 @@ description: Einfache Einkaufsliste mit SQL Datwnbank.
 version: "1.0.0"
 slug: "einkaufsliste"
 init: false
+startup: "services"
 arch:
   - aarch64
   - amd64
