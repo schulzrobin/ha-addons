@@ -8,6 +8,6 @@
 
 - [Link to Addon](https://github.com/schulzrobin/ha-addons/tree/main/shelly-firmware-updater)
 
-## Installation
+### Installation
 
-## Configuration
+### Configuration
