@@ -1,0 +1,29 @@
+name: Einkaufsliste
+slug: einkaufsliste
+description: Webbasierte Einkaufsliste mit Ingress
+version: "1.0.0"
+arch:
+  - amd64
+  - armv7
+  - armhf
+  - aarch64
+
+startup: services
+boot: auto
+
+ingress: true
+ingress_port: 5000
+panel_icon: mdi:cart
+panel_title: Einkaufsliste
+
+options: {}
+schema: {}
+
+ports: {}
+ports_description: {}
+
+map:
+  - data:rw
+
+hassio_api: true
+hassio_role: default
