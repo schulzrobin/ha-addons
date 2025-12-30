@@ -1,6 +1,6 @@
 name: Einkaufsliste
 slug: einkaufsliste
-description: Webbasierte Einkaufsliste mit Ingress
+description: Einkaufsliste mit Datenbank
 version: "1.0.2"
 arch:
   - amd64
