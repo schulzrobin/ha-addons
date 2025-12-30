@@ -1,2 +1,7 @@
-#!/usr/bin/with-contenv bash
+#!/usr/bin/env bash
+
+# venv aktivieren
+source /venv/bin/activate
+
+# App starten
 python app.py
