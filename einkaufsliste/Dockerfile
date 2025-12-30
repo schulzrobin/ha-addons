@@ -3,12 +3,11 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
+RUN apk add --no-cache python3 py3-pip jq
+
 # venv erstellen (in slim Images ist venv meist schon vorhanden)
 RUN python -m venv /venv
 ENV PATH="/venv/bin:$PATH"
-
-# Python & pip
-RUN apk add --no-cache python3 py3-pip jq
 
 # Dependencies installieren
 COPY requirements.txt ./
