@@ -1,7 +1,7 @@
 name: "Ingress Python Add-on"
 description: "Beispiel Add-on mit Python Backend und Ingress"
 version: "1.0.0"
-slug: "ingress_python"
+slug: "example_ingress"
 init: false
 
 arch:
