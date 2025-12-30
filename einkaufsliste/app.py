@@ -34,12 +34,16 @@ def index():
     c = conn.cursor()
 
     if request.method == "POST":
-        c.execute(
-            "INSERT INTO einkaufsliste (menge, einheit, artikel) VALUES (?, ?, ?)",
-            (request.form["menge"], request.form["einheit"], request.form["artikel"])
-        )
-        conn.commit()
-        return redirect(url_for("index"))
+        try:
+            menge = request.form['menge']
+            einheit = request.form['einheit']
+            artikel = request.form['artikel']
+            c.execute('INSERT INTO einkaufsliste (menge, einheit, artikel) VALUES (?, ?, ?)',
+              (menge, einheit, artikel))
+            conn.commit()
+        except Exception as e:
+            print("DB Error:", e)
+            return "Database error", 500
 
     c.execute("SELECT * FROM einkaufsliste")
     items = c.fetchall()
