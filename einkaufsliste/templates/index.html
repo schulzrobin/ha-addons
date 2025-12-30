@@ -36,7 +36,7 @@
     <td>
         <button type="button" class="editBtn">✏️</button>
         <button type="button" class="saveBtn" hidden>💾</button>
-        <a href="/delete/{{ item[0] }}">🗑</a>
+        <a href="{{ url_for('delete', item_id=item[0]) }}">🗑</a>
     </td>
 </tr>
 {% endfor %}
