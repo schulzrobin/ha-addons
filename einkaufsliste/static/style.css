@@ -1,0 +1,35 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 16px;
+}
+
+form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+input, button {
+    padding: 10px;
+    font-size: 16px;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+    margin-top: 20px;
+}
+
+table {
+    width: 600px;
+    border-collapse: collapse;
+}
+
+th, td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    white-space: nowrap;
+}
+
+th {
+    background: #f2f2f2;
+}
