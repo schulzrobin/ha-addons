@@ -10,7 +10,7 @@ def index():
         <head>
             <title>Home Assistant Ingress Add-on</title>
             <style>
-                body { font-family: sans-serif; padding: 2em; }
+                body { font-family: sans-serif; padding: 2em; color: white; }
             </style>
         </head>
         <body>
