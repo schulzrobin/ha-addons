@@ -3,7 +3,11 @@ FROM $BUILD_FROM
 
 WORKDIR /app
 
-COPY app/requirements.txt .
+# Python venv erstellen und aktivieren
+RUN python3 -m venv /venv
+ENV PATH="/venv/bin:$PATH"
+
+COPY app/requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY app ./app
