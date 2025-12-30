@@ -1,6 +1,7 @@
-#!/usr/bin/with-contenv bashio
+#!/usr/bin/env bash
 
 # venv aktivieren
 source /venv/bin/activate
 
-python3 /app/main.py
+# App starten
+python /app/main.py
