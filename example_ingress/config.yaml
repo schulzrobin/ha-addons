@@ -1,14 +1,11 @@
-name: "Example Ingress Python3"
-description: "Beispiel Add-on mit Python Backend und Ingress"
-version: "1.0.7"
+name: "Example Ingress"
+description: "Python Backend mit venv"
+version: "1.0.0"
 slug: "example_ingress"
 init: false
 
 arch:
   - amd64
-  - armv7
-  - armhf
-  - aarch64
 
 startup: services
 boot: auto
