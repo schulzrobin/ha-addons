@@ -1,7 +1,7 @@
 name: Einkaufsliste
 slug: einkaufsliste
 description: Webbasierte Einkaufsliste mit Ingress
-version: "1.0.0"
+version: "1.0.1"
 arch:
   - amd64
   - armv7
