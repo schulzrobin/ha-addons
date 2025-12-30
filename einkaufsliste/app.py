@@ -78,7 +78,11 @@ def delete(item_id):
         return "Database error", 500
     finally:
         conn.close()
-    return index()
+    c.execute("SELECT * FROM einkaufsliste")
+    items = c.fetchall()
+    conn.close()
+
+    return render_template("index.html", items=items)
 
 
 if __name__ == "__main__":
