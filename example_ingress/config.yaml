@@ -13,8 +13,8 @@ boot: auto
 ingress: true
 ingress_port: 8099
 ingress_entry: /
-panel_icon: mdi:python
-panel_title: Python Add-on
+# panel_icon: mdi:python
+# panel_title: Python Add-on
 
 options: {}
 schema: {}
