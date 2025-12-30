@@ -1,7 +1,8 @@
 body {
     font-family: Arial, sans-serif;
     margin: 16px;
-    background: #ffffff;
+    background-color: #333333;
+    color: #000000;
 }
 
 form {
@@ -23,6 +24,8 @@ input, button {
 table {
     width: 600px;
     border-collapse: collapse;
+    background-color: #555555;
+    color: #000000;
 }
 
 th, td {
