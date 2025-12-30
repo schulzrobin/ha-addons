@@ -78,7 +78,7 @@ def delete(item_id):
         return "Database error", 500
     finally:
         conn.close()
-    return redirect(url_for('/'))
+    return redirect('index')
 
 
 if __name__ == "__main__":
