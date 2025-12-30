@@ -1,4 +1,4 @@
-name: "Ingress Python Add-on"
+name: "Example Ingress Python3"
 description: "Beispiel Add-on mit Python Backend und Ingress"
 version: "1.0.2"
 slug: "example_ingress"
