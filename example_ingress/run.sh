@@ -4,4 +4,4 @@
 source /venv/bin/activate
 
 # App starten
-python /app/main.py
+python main.py
