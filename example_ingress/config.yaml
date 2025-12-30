@@ -1,0 +1,27 @@
+name: "Ingress Python Add-on"
+description: "Beispiel Add-on mit Python Backend und Ingress"
+version: "1.0.0"
+slug: "ingress_python"
+init: false
+
+arch:
+  - amd64
+  - armv7
+  - armhf
+  - aarch64
+  - i386
+
+startup: services
+boot: auto
+
+ingress: true
+ingress_port: 8099
+ingress_entry: /
+panel_icon: mdi:python
+panel_title: Python Add-on
+
+options: {}
+schema: {}
+
+ports: {}
+ports_description: {}
