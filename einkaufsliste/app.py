@@ -68,12 +68,17 @@ def update(item_id):
 
 @app.route("/delete/<int:item_id>")
 def delete(item_id):
-    conn = get_db()
-    c = conn.cursor()
-    c.execute("DELETE FROM einkaufsliste WHERE id=?", (item_id,))
-    conn.commit()
-    conn.close()
-    return redirect(url_for("index"))
+    try:
+        conn = sqlite3.connect(DATABASE)
+        c = conn.cursor()
+        c.execute('DELETE FROM einkaufsliste WHERE id=?', (item_id,))
+        conn.commit()
+    except Exception as e:
+        print("DB Error:", e)
+        return "Database error", 500
+    finally:
+        conn.close()
+    return redirect(url_for('index'))
 
 
 if __name__ == "__main__":
