@@ -5,8 +5,8 @@ import os
 app = Flask(__name__, template_folder="templates", static_folder="static")
 app.config['APPLICATION_ROOT'] = '/'
 
-
-DB_PATH = "/data/einkaufsliste.db"
+os.makedirs("/data", exist_ok=True)
+DATABASE = "/data/einkaufsliste.db"
 
 
 def get_db():
@@ -39,7 +39,7 @@ def index():
             (request.form["menge"], request.form["einheit"], request.form["artikel"])
         )
         conn.commit()
-        return redirect(url_for("/"))
+        return redirect(url_for("index"))
 
     c.execute("SELECT * FROM einkaufsliste")
     items = c.fetchall()
@@ -69,7 +69,7 @@ def delete(item_id):
     c.execute("DELETE FROM einkaufsliste WHERE id=?", (item_id,))
     conn.commit()
     conn.close()
-    return redirect(url_for("/"))
+    return redirect(url_for("index"))
 
 
 if __name__ == "__main__":
