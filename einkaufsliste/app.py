@@ -6,7 +6,7 @@ app = Flask(__name__, template_folder="templates", static_folder="static")
 app.config['APPLICATION_ROOT'] = '/'
 
 os.makedirs("/data", exist_ok=True)
-DATABASE = "/data/einkaufsliste.db"
+DB_PATH = "/data/einkaufsliste.db"
 
 
 def get_db():
