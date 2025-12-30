@@ -1,15 +1,17 @@
-ARG BUILD_FROM=ghcr.io/home-assistant/base:python3.11
-FROM $BUILD_FROM
+# Nutze offizielles Python-3.11 slim Image
+FROM python:3.11-slim
 
 WORKDIR /app
 
-# Python venv erstellen und aktivieren
-RUN python3 -m venv /venv
+# venv erstellen (in slim Images ist venv meist schon vorhanden)
+RUN python -m venv /venv
 ENV PATH="/venv/bin:$PATH"
 
+# Dependencies installieren
 COPY app/requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
+# App kopieren
 COPY app ./app
 COPY run.sh /
 RUN chmod a+x /run.sh
