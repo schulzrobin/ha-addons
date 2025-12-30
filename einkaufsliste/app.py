@@ -69,7 +69,7 @@ def update(item_id):
 @app.route('/delete/<int:item_id>')
 def delete(item_id):
     try:
-        conn = sqlite3.connect(DATABASE)
+        conn = sqlite3.connect(DB_PATH)
         c = conn.cursor()
         c.execute('DELETE FROM einkaufsliste WHERE id=?', (item_id,))
         conn.commit()
