@@ -77,13 +77,10 @@ def delete(item_id):
         print("DB Error:", e)
         return "Database error", 500
     finally:
-        c.execute("SELECT * FROM einkaufsliste")
-        items = c.fetchall()
         conn.close()
         
 
-    return render_template("index.html", items=items)
-
+    return redirect(url_for("index"))
 
 if __name__ == "__main__":
     init_db()
