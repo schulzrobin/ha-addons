@@ -14,6 +14,6 @@ RUN python3 -m venv /venv
 ENV PATH="/venv/bin:$PATH"
 
 COPY requirements.txt ./
-RUN pip install --user --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 CMD ["python3", "app.py"]
