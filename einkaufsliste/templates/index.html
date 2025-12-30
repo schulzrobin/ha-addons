@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Einkaufsliste</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<h1>🛒 Einkaufsliste</h1>
+
+<form method="POST">
+    <input name="menge" placeholder="Menge" required>
+    <input name="einheit" placeholder="Einheit" required>
+    <input name="artikel" placeholder="Artikel" required>
+    <button type="submit">➕ Hinzufügen</button>
+</form>
+
+<div class="table-wrapper">
+<table>
+<thead>
+<tr>
+    <th>Menge</th>
+    <th>Einheit</th>
+    <th>Artikel</th>
+    <th>Aktion</th>
+</tr>
+</thead>
+<tbody>
+{% for item in items %}
+<tr data-id="{{ item[0] }}">
+    <td><span class="text">{{ item[1] }}</span><input class="edit" value="{{ item[1] }}" hidden></td>
+    <td><span class="text">{{ item[2] }}</span><input class="edit" value="{{ item[2] }}" hidden></td>
+    <td><span class="text">{{ item[3] }}</span><input class="edit" value="{{ item[3] }}" hidden></td>
+    <td>
+        <button type="button" class="editBtn">✏️</button>
+        <button type="button" class="saveBtn" hidden>💾</button>
+        <a href="/delete/{{ item[0] }}">🗑</a>
+    </td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
