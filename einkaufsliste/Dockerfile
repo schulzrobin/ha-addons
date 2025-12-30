@@ -10,10 +10,10 @@ RUN apt-get update && \
 COPY . /app
 
 # venv erstellen (in slim Images ist venv meist schon vorhanden)
-RUN python -m venv /venv
+RUN python3 -m venv /venv
 ENV PATH="/venv/bin:$PATH"
 
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
-RUN chmod a+x /run.sh
+CMD ["python3", "app.py"]
