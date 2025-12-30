@@ -2,7 +2,9 @@ from flask import Flask, render_template, request, redirect, jsonify
 import sqlite3
 import os
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder="templates", static_folder="static")
+app.config['APPLICATION_ROOT'] = '/'
+
 
 DB_PATH = "/data/einkaufsliste.db"
 
