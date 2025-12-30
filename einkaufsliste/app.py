@@ -28,7 +28,7 @@ def init_db():
     conn.close()
 
 
-@app.route("/", methods=["GET", "POST"])
+@app.route('/', methods=["GET", "POST"])
 def index():
     conn = get_db()
     c = conn.cursor()
@@ -52,7 +52,7 @@ def index():
     return render_template("index.html", items=items)
 
 
-@app.route("/update/<int:item_id>", methods=["POST"])
+@app.route('/update/<int:item_id>', methods=["POST"])
 def update(item_id):
     data = request.get_json()
     conn = get_db()
@@ -66,7 +66,7 @@ def update(item_id):
     return jsonify(success=True)
 
 
-@app.route("/delete/<int:item_id>")
+@app.route('/delete/<int:item_id>')
 def delete(item_id):
     try:
         conn = sqlite3.connect(DATABASE)
