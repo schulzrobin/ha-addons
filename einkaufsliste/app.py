@@ -76,10 +76,10 @@ def delete(item_id):
     except Exception as e:
         print("DB Error:", e)
         return "Database error", 500
-    
-    c.execute("SELECT * FROM einkaufsliste")
-    items = c.fetchall()
-    conn.close()
+    finally:
+        c.execute("SELECT * FROM einkaufsliste")
+        items = c.fetchall()
+        conn.close()
         
 
     return render_template("index.html", items=items)
