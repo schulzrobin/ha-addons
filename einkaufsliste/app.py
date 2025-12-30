@@ -39,7 +39,7 @@ def index():
             (request.form["menge"], request.form["einheit"], request.form["artikel"])
         )
         conn.commit()
-        return redirect("/")
+        return redirect(url_for("/"))
 
     c.execute("SELECT * FROM einkaufsliste")
     items = c.fetchall()
@@ -69,7 +69,7 @@ def delete(item_id):
     c.execute("DELETE FROM einkaufsliste WHERE id=?", (item_id,))
     conn.commit()
     conn.close()
-    return redirect("/")
+    return redirect(url_for("/"))
 
 
 if __name__ == "__main__":
