@@ -1,7 +1,7 @@
 name: Einkaufsliste
 slug: einkaufsliste
 description: Einkaufsliste mit Datenbank
-version: "1.0.12"
+version: "1.0.13"
 arch:
   - amd64
 
