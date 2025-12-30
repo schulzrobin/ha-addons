@@ -1,16 +1,21 @@
-FROM ghcr.io/home-assistant/amd64-base:latest
+# Nutze offizielles Python-3.11 slim Image
+FROM python:3.11-slim
 
 WORKDIR /app
+
+# venv erstellen (in slim Images ist venv meist schon vorhanden)
+RUN python -m venv /venv
+ENV PATH="/venv/bin:$PATH"
 
 # Python & pip
 RUN apk add --no-cache python3 py3-pip jq
 
-# Abhängigkeiten installieren --user wegen extern verwalteter Umgebung
-COPY requirements.txt .
-RUN pip3 install --no-cache-dir --user -r requirements.txt
+# Dependencies installieren
+COPY app/requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
 
-# App-Dateien kopieren
-COPY . .
 
-# Entrypoint
-CMD ["/root/.local/bin/python3", "-u", "app.py"]
+# App kopieren
+COPY app /app
+COPY run.sh /run.sh
+RUN chmod a+x /run.sh
