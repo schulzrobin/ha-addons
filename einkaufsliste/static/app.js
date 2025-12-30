@@ -14,7 +14,7 @@ document.querySelectorAll('.saveBtn').forEach(btn => {
         const id = row.dataset.id;
         const inputs = row.querySelectorAll('.edit');
 
-        fetch(`/update/${id}`, {
+        fetch(`./update/` + id, {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({
